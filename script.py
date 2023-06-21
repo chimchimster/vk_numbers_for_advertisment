@@ -4,11 +4,12 @@ import time
 import json
 from dotenv import load_dotenv
 import requests
-from datetime import datetime
+import pandas as pd
+
 
 load_dotenv()
 token = os.environ.get('vk_token')
-
+list_of_results = []
 offset = 0
 for i in range(100):
 
@@ -27,7 +28,7 @@ for i in range(100):
     script_exec_full_data = f"""
         var result = [];
         var data = API.users.get({{"user_ids": "{','.join(map(str, json.loads(response_ids.text).get('response')))}", "fields": "contacts,bdate,sex"}});
-        result += [data@.mobile_phone, data@.first_name, data@.last_name, data@.bdate, data@.sex];
+        result += [data@.first_name, data@.last_name, data@.mobile_phone, data@.bdate, data@.sex];
         return result;
     """
 
@@ -35,11 +36,15 @@ for i in range(100):
 
     data = json.loads(response_data.text).get('response')
 
-    try:
-        list_of_results = [(data[0][x], data[1][x], data[2][x]) for x in range(len(data[0])) if data[0][x] and re.match(r'^\+?\d{1,3}[-.\s]?\(?\d{1,3}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$', data[0][x]) and 536457600 <= datetime.strptime('-'.join([data[3][0].split('.')[2], data[3][0].split('.')[1], data[3][0].split('.')[0]]), "%Y-%m-%d").timestamp() <= 1104516061 and data[4][x] == 2]
-    except:
-        list_of_results = []
+    for i in range(len(data[0])):
+        if data[2][i] and re.match(r'^\+?\d{1,3}[-.\s]?\(?\d{1,3}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$', data[2][i]) and re.findall(r'(\+77|87)(\d{9})', data[2][i]):
+            format_number = list(re.findall(r'(\+77|87)(\d{9})', data[2][i])[0])
 
-    with open('phone_numbers.txt', 'a') as file:
-        for tpl in list_of_results:
-            file.write(','.join(tpl) + '\n')
+            format_number[0] = '+77'
+            list_of_results.append((data[0][i] if data[0][i] else '', data[1][i] if data[1][i] else '', ''.join(format_number), data[3][i] if data[3][i] and len(data[3][i]) >= 8 else 'год рождения отсутствует', "мужчина" if data[4][i] == 2 else "женщина"))
+
+    list_of_results = list(filter(lambda x: "777777" not in x[2] and "000000" not in x[2], list_of_results))
+
+
+df = pd.DataFrame(list_of_results, columns=["Имя", "Фамилия", "Номер телефона", "Год рождения", "Пол"])
+df.to_excel('phone_numbers.xlsx', sheet_name='phones')
