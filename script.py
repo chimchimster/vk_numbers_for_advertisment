@@ -9,12 +9,7 @@ from datetime import datetime
 load_dotenv()
 token = os.environ.get('vk_token')
 
-# with open('groups.txt', 'r') as file:
-#     file.readlines()
-
 offset = 0
-
-
 for i in range(100):
 
     script_exec_members_ids = f"""
@@ -32,7 +27,7 @@ for i in range(100):
     script_exec_full_data = f"""
         var result = [];
         var data = API.users.get({{"user_ids": "{','.join(map(str, json.loads(response_ids.text).get('response')))}", "fields": "contacts,bdate,sex"}});
-        result += [data@.mobile_phone, data@.first_name, data@.last_name, data@.bdate,data@.sex];
+        result += [data@.mobile_phone, data@.first_name, data@.last_name, data@.bdate, data@.sex];
         return result;
     """
 
