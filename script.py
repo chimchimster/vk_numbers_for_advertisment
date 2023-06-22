@@ -44,7 +44,7 @@ for i in range(100):
             list_of_results.append((data[0][i] if data[0][i] else '', data[1][i] if data[1][i] else '', ''.join(format_number), data[3][i] if data[3][i] and len(data[3][i]) >= 8 else 'год рождения отсутствует', "мужчина" if data[4][i] == 2 else "женщина"))
 
     list_of_results = list(filter(lambda x: "777777" not in x[2] and "000000" not in x[2], list_of_results))
-
+    print(list_of_results)
 
 df = pd.DataFrame(list_of_results, columns=["Имя", "Фамилия", "Номер телефона", "Год рождения", "Пол"])
 df.to_excel('phone_numbers.xlsx', sheet_name='phones')

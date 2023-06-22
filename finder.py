@@ -77,7 +77,7 @@ def get_members(group_id, offset, count=1000):
 
 def data_handler(data):
 
-    return [[data[0][i], data[1][i], data[2][i], data[3][i]] for i in range(len(data[0])) if data[1][i] and re.findall(r'(\+79|89)(\d{9})', data[1][i])]
+    return [(data[0][i], ''.join(re.findall(r'(\+79|89)(\d{9})', data[1][i])[0]), data[2][i], data[3][i]) for i in range(len(data[0])) if data[1][i] and re.findall(r'(\+79|89)(\d{9})', data[1][i])]
 
 
 def main():
@@ -95,8 +95,13 @@ def main():
 
             group_result.append(data_handler(full_data))
 
-        df = pd.DataFrame(*group_result, columns=['vk_id', 'телефон', 'имя', 'фамилия'])
-        df.to_excel('numbers.xlsx', sheet_name=f'{group}')
+    result = []
+    for lst in group_result:
+        for item in lst:
+            result.append(item)
+
+    df = pd.DataFrame(result, columns=['vk_id', 'телефон', 'имя', 'фамилия'])
+    df.to_excel('numbers.xlsx', sheet_name=f'numbers')
 
 
 if __name__ == '__main__':
