@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from decorators import connect_db
+from .decorators import connect_db
 
 
 @dataclass
@@ -29,8 +29,4 @@ class MySQLDatabase:
         cursor = connection.cursor()
 
         return cursor
-
-
-m = MySQLDatabase('temp_db')
-m.insert_into_table('phone_numbers', ['first_name', 'last_name', 'date_of_birth', 'phone_number', 'sex', 'sold_status'], [('artem', 'kasyan', '01.01.2000', '+79994344422', '2', '1',)])
 

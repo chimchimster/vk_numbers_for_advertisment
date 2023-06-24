@@ -16,7 +16,7 @@ def connect_db(func) -> callable:
             user=os.environ.get('MYSQL_USER'),
             password=os.environ.get('MYSQL_PASSWORD'),
         )
-        print(connection)
+
         try:
             result = func(*args, connection=connection, **kwargs)
         except Error as e:
