@@ -29,4 +29,3 @@ class MySQLDatabase:
         cursor = connection.cursor()
 
         return cursor
-

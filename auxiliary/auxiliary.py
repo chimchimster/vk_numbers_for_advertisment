@@ -1,7 +1,20 @@
 from datetime import datetime
 
 
+class GetStrOrKey(dict):
+    def __getitem__(self, key):
+        return super().__getitem__(key)
+
+    def get(self, key) -> str:
+        if self.__contains__(key):
+            return self.__getitem__(key)
+        return ''
+
+
 def vk_date_of_birth_universalizer(date_of_birth: str) -> datetime | None:
+
+    if not date_of_birth:
+        return
 
     date_of_birth = date_of_birth.split('.')
 

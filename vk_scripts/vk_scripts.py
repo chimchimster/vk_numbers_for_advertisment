@@ -35,7 +35,7 @@ def get_full_data(members_ids: list) -> list:
     """ Function which retrieves full data about members. """
 
     script_exec_full_data = f"""
-        var data = API.users.get({{"user_ids": "{','.join(map(str, members_ids))}", "fields": "contacts,sex,bdate"}});
+        var data = API.users.get({{"user_ids": "{','.join(map(str, members_ids))}", "fields": "contacts,sex,bdate,country,city"}});
 
         return data;
     """
