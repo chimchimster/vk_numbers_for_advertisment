@@ -2,14 +2,13 @@ import re
 
 from database.database import MySQLDatabase
 from statistics.statistics import StatisticsManager
-from telegram_logs.telegram_logs import TelegramCriticalLogger
+from telegram_logs.telegram_logs import logger
 
 from auxiliary.auxiliary import vk_date_of_birth_universalizer
 from vk_scripts.vk_scripts import get_members_ids, get_full_data, offset_checker
 
 
 statistics = StatisticsManager()
-_logger = TelegramCriticalLogger()
 
 
 def get_groups():
@@ -28,6 +27,9 @@ def data_handler(data):
         has_phone = None
         try:
             has_phone = re.findall(r'(\+79|89)((?!\1{5,})\d{9,})', member_data.get('mobile_phone'))[0]
+
+            if re.match(r'(\d+)\1{4,}', has_phone[1]):
+                has_phone = None
 
         except:
             ...
@@ -81,9 +83,10 @@ def main():
 
             MySQLDatabase('temp_db').insert_into_table('phone_numbers', ['first_name', 'last_name', 'date_of_birth', 'country', 'city', 'phone_number', 'sex'], data_to_db)
 
-            statistics.update_statistics({group: len(data_to_db)})
+            kwargs = {group: len(data_to_db)}
+            statistics.update_statistics(**kwargs)
 
-    _logger.send_message(statistics.get_statistics())
+    logger.send_message(statistics.get_statistics())
 
 
 if __name__ == '__main__':

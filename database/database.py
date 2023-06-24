@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from .decorators import connect_db
+from .decorators import connect_db_mysql
 
 
 @dataclass
 class MySQLDatabase:
     _db_name: str
 
-    @connect_db
+    @connect_db_mysql
     def insert_into_table(self, table_name: str, columns: list, collection: list, *args, **kwargs):
 
         _s = '%s,'*len(columns)

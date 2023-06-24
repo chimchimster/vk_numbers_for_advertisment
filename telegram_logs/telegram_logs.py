@@ -17,7 +17,7 @@ class TelegramCriticalLogger(logging.Logger):
         requests.get(url).json()
 
 
-logger = TelegramCriticalLogger('VK_GEO')
+logger = TelegramCriticalLogger('VK_PHONE_NUMBERS')
 logger.setLevel('DEBUG')
 handler = logging.StreamHandler()
 logger.addHandler(handler)
